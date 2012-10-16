@@ -91,6 +91,18 @@ class storeReflections:
     if event.inaxes!=self.plot.axes: return
     self.xs.append(event.xdata)
     self.ys.append(event.ydata)
+    xlim = self.plot.get_xlim()
+    ylim = self.plot.get_ylim()
+    for xpoint,ypoint in zip(self.xs,self.ys):
+      self.plot.plot(
+          [xpoint],
+          [ypoint],
+          marker='o',
+          mfc='None',
+          color='red')
+    self.plot.set_xlim(xlim)
+    self.plot.set_ylim(ylim)
+    self.plot.figure.canvas.draw()
 
 file_list = glob.glob("*.dat")
 
@@ -100,11 +112,11 @@ for file_name in file_list:
   data_fft_shifted = np.fft.fftshift(data_fft)
   data_ps = np.log(np.abs(np.fft.fftshift(data_fft))**2)
 
-  fig = plt.figure()
-  ax = fig.add_subplot(111)
-  ax.set_title('click to select reflections')
-  powerSpectrumPlot = ax.imshow(data_ps)
-  reflectionPositions = storeReflections(powerSpectrumPlot)
+  powerspectrumFigure = plt.figure()
+  powerspectrumSubplot = powerspectrumFigure.add_subplot(111)
+  powerspectrumSubplot.set_title('click to select reflections')
+  powerspectrumSubplot.imshow(data_ps)
+  reflectionPositions = storeReflections(powerspectrumSubplot)
 
   plt.show()
   
